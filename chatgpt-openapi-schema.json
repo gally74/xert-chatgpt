@@ -1,0 +1,271 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "XERT Training API",
+    "description": "Access your XERT cycling training data including FTP, training load, workouts, and activities",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://elba-proelimination-broilingly.ngrok-free.dev",
+      "description": "XERT API Server via ngrok"
+    }
+  ],
+  "paths": {
+    "/api/training-info": {
+      "get": {
+        "summary": "Get training info including FTP, training load, and workout of the day",
+        "description": "Returns current fitness signature (FTP, LTP, HIE, PP), training status, training load (XSS), target XSS, and workout of the day",
+        "operationId": "getTrainingInfo",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["zwo", "erg"]
+            },
+            "description": "Optional: Workout file format for WOTD download URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Training information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "signature": {
+                      "type": "object",
+                      "properties": {
+                        "ftp": {"type": "number"},
+                        "ltp": {"type": "number"},
+                        "hie": {"type": "number"},
+                        "pp": {"type": "number"}
+                      }
+                    },
+                    "status": {"type": "string"},
+                    "tl": {
+                      "type": "object",
+                      "properties": {
+                        "low": {"type": "number"},
+                        "high": {"type": "number"},
+                        "peak": {"type": "number"},
+                        "total": {"type": "number"}
+                      }
+                    },
+                    "wotd": {
+                      "type": "object",
+                      "properties": {
+                        "type": {"type": "string"},
+                        "name": {"type": "string"},
+                        "workoutId": {"type": "string"},
+                        "description": {"type": "string"},
+                        "difficulty": {"type": "number"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error fetching training info"
+          }
+        }
+      }
+    },
+    "/api/workouts": {
+      "get": {
+        "summary": "List all saved workouts",
+        "description": "Returns a list of all your saved XERT workouts",
+        "operationId": "listWorkouts",
+        "responses": {
+          "200": {
+            "description": "List of workouts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "workouts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {"type": "string"},
+                          "name": {"type": "string"},
+                          "description": {"type": "string"},
+                          "last_modified": {"type": "number"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workouts/{workoutId}": {
+      "get": {
+        "summary": "Get detailed workout information",
+        "description": "Returns detailed information about a specific workout including all intervals, power targets, and durations",
+        "operationId": "getWorkout",
+        "parameters": [
+          {
+            "name": "workoutId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"},
+            "description": "The workout ID/path from the workouts list"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workout details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "name": {"type": "string"},
+                    "description": {"type": "string"},
+                    "workout": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {"type": "string"},
+                          "power": {"type": "number"},
+                          "duration": {"type": "number"},
+                          "interval_count": {"type": "number"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/activities": {
+      "get": {
+        "summary": "List activities in a date range",
+        "description": "Returns a list of activities within the specified time range. Defaults to last 7 days if no dates provided.",
+        "operationId": "listActivities",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {"type": "integer"},
+            "description": "Unix timestamp for start date (seconds since epoch). Default: 7 days ago"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {"type": "integer"},
+            "description": "Unix timestamp for end date (seconds since epoch). Default: now"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of activities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "activities": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {"type": "string"},
+                          "path": {"type": "string"},
+                          "activity_type": {"type": "string"},
+                          "start_date": {
+                            "type": "object",
+                            "properties": {
+                              "date": {"type": "string"}
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/activities/{activityId}": {
+      "get": {
+        "summary": "Get detailed activity information",
+        "description": "Returns detailed metrics for a specific activity including XSS, power data, breakthroughs, and fitness signature changes",
+        "operationId": "getActivity",
+        "parameters": [
+          {
+            "name": "activityId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"},
+            "description": "The activity ID/path from the activities list"
+          },
+          {
+            "name": "session_data",
+            "in": "query",
+            "schema": {"type": "boolean"},
+            "description": "Include per-second MPA/power session data (can be large). Default: false"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activity details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {"type": "boolean"},
+                    "name": {"type": "string"},
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "xss": {"type": "number"},
+                        "xlss": {"type": "number"},
+                        "xhss": {"type": "number"},
+                        "xpss": {"type": "number"},
+                        "focus": {"type": "string"},
+                        "breakthrough": {"type": "number"},
+                        "sig": {
+                          "type": "object",
+                          "properties": {
+                            "ftp": {"type": "number"},
+                            "ltp": {"type": "number"},
+                            "hie": {"type": "number"},
+                            "pp": {"type": "number"}
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
