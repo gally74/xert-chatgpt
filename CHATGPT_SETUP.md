@@ -4,7 +4,7 @@ This guide will help you connect your XERT training data to ChatGPT using a Cust
 
 ## Prerequisites
 
-- ✅ XERT MCP server already set up (you have this!)
+- ✅ XERT API server ready to use
 - ✅ Node.js installed
 - ✅ ChatGPT Plus subscription (required for Custom GPTs)
 

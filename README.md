@@ -116,4 +116,4 @@ MIT
 ## 🙏 Credits
 
 - [XERT](https://www.xertonline.com/) - Advanced cycling analytics
-- Based on the original [xert-mcp](https://github.com/Milofax/xert-mcp) project
+- [XERT](https://www.xertonline.com/) - Advanced cycling analytics platform

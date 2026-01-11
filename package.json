@@ -1,25 +1,23 @@
 {
-  "name": "xert-mcp",
+  "name": "xert-chatgpt",
   "version": "1.0.0",
-  "description": "Model Context Protocol (MCP) server for XERT API - access fitness signature, training load, workouts and activities",
+  "description": "REST API server for connecting XERT cycling training data to ChatGPT Custom GPTs",
   "type": "module",
-  "main": "dist/server.js",
+  "main": "dist/apiServer.js",
   "scripts": {
     "build": "NODE_OPTIONS='--max-old-space-size=8192' tsc",
-    "start": "node dist/server.js",
-    "dev": "tsx src/server.ts",
     "setup-auth": "tsx scripts/setup-auth.ts",
     "api": "tsx src/apiServer.ts",
     "api:build": "npm run build && node dist/apiServer.js"
   },
   "keywords": [
-    "mcp",
+    "chatgpt",
     "xert",
     "cycling",
     "training",
     "fitness",
-    "claude",
-    "ai"
+    "openai",
+    "custom-gpt"
   ],
   "author": "Milofax",
   "license": "MIT",
