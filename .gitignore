@@ -33,3 +33,4 @@ logs/
 
 # ngrok
 .ngrok/
+.npm-cache/
